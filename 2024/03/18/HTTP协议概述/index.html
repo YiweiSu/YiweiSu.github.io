@@ -1,0 +1,983 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/avatar.png">
+  <link rel="icon" href="/img/avatar.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="SCORKI">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="HTTP 的特点和缺点特点：无连接、无状态、灵活、简单快速  无连接：每一次请求都要连接一次，请求结束就会断掉，不会保持连接 无状态：每一次请求都是独立的，请求结束不会记录连接的任何信息(提起裤子就不认人的意思)，减少了网络开销，这是优点也是缺点 灵活：通过http协议中头部的Content-Type标记，可以传输任意数据类型的数据对象(文本、图片、视频等等)，非常灵活 简单快速：发送请求访问某">
+<meta property="og:type" content="article">
+<meta property="og:title" content="HTTP协议概述">
+<meta property="og:url" content="http://example.com/2024/03/18/HTTP%E5%8D%8F%E8%AE%AE%E6%A6%82%E8%BF%B0/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="HTTP 的特点和缺点特点：无连接、无状态、灵活、简单快速  无连接：每一次请求都要连接一次，请求结束就会断掉，不会保持连接 无状态：每一次请求都是独立的，请求结束不会记录连接的任何信息(提起裤子就不认人的意思)，减少了网络开销，这是优点也是缺点 灵活：通过http协议中头部的Content-Type标记，可以传输任意数据类型的数据对象(文本、图片、视频等等)，非常灵活 简单快速：发送请求访问某">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2024-03-18T03:12:36.000Z">
+<meta property="article:modified_time" content="2024-03-18T03:13:12.137Z">
+<meta property="article:author" content="SCORKI">
+<meta property="article:tag" content="计算机网络">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  
+  <title>HTTP协议概述 - Hexo</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.7","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.1.1"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>SCORKI</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/tags.jpg') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="HTTP协议概述"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2024-03-18 11:12" pubdate>
+          2024年3月18日 上午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          9.7k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          81 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">HTTP协议概述</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <p><a name="BSoBq"></a></p>
+<h2 id="HTTP-的特点和缺点"><a href="#HTTP-的特点和缺点" class="headerlink" title="HTTP 的特点和缺点"></a>HTTP 的特点和缺点</h2><p><strong>特点</strong>：无连接、无状态、灵活、简单快速</p>
+<ul>
+<li><strong>无连接</strong>：每一次请求都要连接一次，请求结束就会断掉，不会保持连接</li>
+<li><strong>无状态</strong>：每一次请求都是独立的，请求结束不会记录连接的任何信息(<strong>提起裤子就不认人的意思</strong>)，减少了网络开销，这是优点也是缺点</li>
+<li><strong>灵活</strong>：通过http协议中头部的Content-Type标记，可以传输任意数据类型的数据对象(文本、图片、视频等等)，非常灵活</li>
+<li><strong>简单快速</strong>：发送请求访问某个资源时，只需传送请求方法和URL就可以了，使用简单，正由于http协议简单，使得http服务器的程序规模小，因而通信速度很快</li>
+</ul>
+<p><strong>缺点</strong>：无状态、不安全、明文传输、队头阻塞</p>
+<ul>
+<li><strong>无状态</strong>：请求不会记录任何连接信息，没有记忆，就无法区分多个请求发起者身份是不是同一个客户端的，意味着如果后续处理需要前面的信息，则它必须重传，这样可能导致每次连接传送的数据量增大</li>
+<li><strong>不安全</strong>：明文传输可能被窃听不安全，缺少身份认证也可能遭遇伪装，还有缺少报文完整性验证可能遭到篡改</li>
+<li><strong>明文传输</strong>：报文(header部分)使用的是明文，直接将信息暴露给了外界，WIFI陷阱就是复用明文传输的特点，诱导你连上热点，然后疯狂抓取你的流量，从而拿到你的敏感信息</li>
+<li><strong>队头阻塞</strong>：开启长连接(下面有讲)时，只建立一个TCP连接，同一时刻只能处理一个请求，那么当请求耗时过长时，其他请求就只能阻塞状态(如何解决下面有讲)<br><a name="tYjml"></a></li>
+</ul>
+<h2 id="HTTP-报文组成部分"><a href="#HTTP-报文组成部分" class="headerlink" title="HTTP 报文组成部分"></a>HTTP 报文组成部分</h2><p><strong>http报文</strong>：由请求报文和响应报文组成<br /><strong>请求报文</strong>：由请求行、请求头、空行、请求体四部分组成<br /><strong>响应报文</strong>：由状态行、响应头、空行、响应体四部分组成</p>
+<ul>
+<li><strong>请求行</strong>：包含http方法，请求地址，http协议以及版本</li>
+<li><strong>请求头&#x2F;响应头</strong>：就是一些key:value来告诉服务端我要哪些内容，要注意什么类型等，请求头&#x2F;响应头每一个字段详解</li>
+<li><strong>空行</strong>：用来区分首部与实体，因为请求头都是key:value的格式，当解析遇到空行时，服务端就知道下一个不再是请求头部分，就该当作请求体来解析了</li>
+<li><strong>请求体</strong>：请求的参数</li>
+<li><strong>状态行</strong>：包含http协议及版本、数字状态码、状态码英文名称</li>
+<li><strong>响应体</strong>：服务端返回的数据<br><a name="WFdeA"></a></li>
+</ul>
+<h2 id="HTTP-请求方法-9种"><a href="#HTTP-请求方法-9种" class="headerlink" title="HTTP 请求方法(9种)"></a>HTTP 请求方法(9种)</h2><p><strong>HTTP1.0：</strong>GET、POST、HEAD<br /><strong>HTTP1.1：</strong>PUT、PATCH、DELETE、OPTIONS、TRACE、CONNECT</p>
+<table>
+<thead>
+<tr>
+<th>方法</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>GET</td>
+<td>获取资源</td>
+</tr>
+<tr>
+<td>POST</td>
+<td>传输资源，通常会造成服务器资源的修改</td>
+</tr>
+<tr>
+<td>HEAD</td>
+<td>获得报文首部</td>
+</tr>
+<tr>
+<td>PUT</td>
+<td>更新资源</td>
+</tr>
+<tr>
+<td>PATCH</td>
+<td>对PUT的补充，对已知资源部分更新 菜鸟</td>
+</tr>
+<tr>
+<td>DELETE</td>
+<td>删除资源</td>
+</tr>
+<tr>
+<td>OPTIONS</td>
+<td>列出请求资源支持的请求方法，用来跨域请求</td>
+</tr>
+<tr>
+<td>TRACE</td>
+<td>追踪请求&#x2F;响应路径，用于测试或诊断</td>
+</tr>
+<tr>
+<td>CONNECT</td>
+<td>将连接改为管道方式用于代理服务器(隧道代理下面有讲)</td>
+</tr>
+</tbody></table>
+<p><a name="iS69j"></a></p>
+<h2 id="GET-和-POST-的区别"><a href="#GET-和-POST-的区别" class="headerlink" title="GET 和 POST 的区别"></a>GET 和 POST 的区别</h2><ul>
+<li>GET在浏览器回退时是无害的，而POST会再次发起请求</li>
+<li>GET请求会被浏览器主动缓存，而POST不会，除非手动设置</li>
+<li>GET请求参数会被安逗保留在浏览器历史记录里，而POST中的参数不会被保留</li>
+<li>GET请求在URL中传递的参数有长度限制(浏览器限制大小不同)，而POST没有限制</li>
+<li>GET参数通过URL传递，POST放在Request body中</li>
+<li>GET产生的URL地址可以被收藏，而POST不可以</li>
+<li>GET没有POST安全，因为GET请求参数直接暴露在URL上，所以不能用来传递敏感信息</li>
+<li>GET请求只能进行URL编码，而POST支持多种编码方式</li>
+<li>对参数的数据类型，GET只接受ASCII字符，而POST没有限制</li>
+<li>GET产生一个TCP数据包，POST产生两个数据包(Firefox只发一次)。GET浏览器把 http header和data一起发出去，响应成功200，POST先发送header，响应100 continue，再发送data，响应成功200<br><a name="IcRLB"></a></li>
+</ul>
+<h2 id="常见-HTTP-状态码"><a href="#常见-HTTP-状态码" class="headerlink" title="常见 HTTP 状态码"></a>常见 HTTP 状态码</h2><p><strong>1xx: 指示信息——表示请求已接收，继续处理</strong><br /><strong>2xx: 成功——表示请求已被成功接收</strong><br /><strong>3xx: 重定向——表示要完成请求必须进行进一步操作</strong><br /><strong>4xx: 客户端错误——表示请求有语法错误或请求无法实现</strong><br /><strong>5xx: 服务端错误——表示服务器未能实现合法的请求</strong><br />常见状态码：</p>
+<table>
+<thead>
+<tr>
+<th>状态码</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>200</td>
+<td>请求成功</td>
+</tr>
+<tr>
+<td>206</td>
+<td>已完成指定范围的请求(带Range头的GET请求),场景如video,audio播放文件较大,文件分片时</td>
+</tr>
+<tr>
+<td>301</td>
+<td>永久重定向</td>
+</tr>
+<tr>
+<td>302</td>
+<td>临时重定向</td>
+</tr>
+<tr>
+<td>304</td>
+<td>请求资源未修改，可以使用缓存的资源，不用在服务器取</td>
+</tr>
+<tr>
+<td>400</td>
+<td>请求有语法错误</td>
+</tr>
+<tr>
+<td>401</td>
+<td>没有权限访问</td>
+</tr>
+<tr>
+<td>403</td>
+<td>服务器拒绝执行请求，场景如不允许直接访问，只能通过服务器访问时</td>
+</tr>
+<tr>
+<td>404</td>
+<td>请求资源不存在</td>
+</tr>
+<tr>
+<td>500</td>
+<td>服务器内部错误，无法完成请求</td>
+</tr>
+<tr>
+<td>503</td>
+<td>请求未完成，因服务器过载、宕机或维护等</td>
+</tr>
+</tbody></table>
+<p><a name="f2r1V"></a></p>
+<h2 id="什么是持久连接-长连接"><a href="#什么是持久连接-长连接" class="headerlink" title="什么是持久连接&#x2F;长连接"></a>什么是持久连接&#x2F;长连接</h2><p>http1.0协议采用的是”请求-应答”模式，当使用普通模式，每个请求&#x2F;应答客户与服务器都要新建一个连接，完成之后立即断开连接(http协议为无连接的协议)<br />http1.1版本支持长连接，即请求头添加Connection: Keep-Alive，使用Keep-Alive模式(又称持久连接，连接复用)建立一个TCP连接后使客户端到服务端的连接持续有效，可以发送&#x2F;接受多个http请求&#x2F;响应，当出现对服务器的后续请求时，Keep-Alive功能避免了建立或者重新建立连接</p>
+<p>如图：短连接极大的降低了传输效率<br><a name="cBnrN"></a></p>
+<h3 id="长连接优缺点"><a href="#长连接优缺点" class="headerlink" title="长连接优缺点"></a>长连接优缺点</h3><p><strong>优点</strong></p>
+<ul>
+<li>减少CPU及内存的使用，因为不需要经常建立和关闭连接</li>
+<li>支持管道化的请求及响应模式</li>
+<li>减少网络堵塞，因为减少了TCP请求</li>
+<li>减少了后续请求的响应时间，因为不需要等待建立TCP、握手、挥手、关闭TCP的过程</li>
+<li>发生错误时，也可在不关闭连接的情况下进行错误提示</li>
+</ul>
+<p><strong>缺点</strong><br />一个长连接建立后，如果一直保持连接，对服务器来说是多么的浪费资源呀，而且长连接时间的长短，直接影响到服务器的并发数<br />还有就是可能造成队头堵塞(下面有讲)，造成信息延迟<br><a name="J5Jn0"></a></p>
+<h3 id="如何避免长连接资源浪费？"><a href="#如何避免长连接资源浪费？" class="headerlink" title="如何避免长连接资源浪费？"></a>如何避免长连接资源浪费？</h3><ul>
+<li><strong>客户端请求头声明</strong>：Connection: close，本次通信后就关闭连接</li>
+<li><strong>服务端配置</strong>：如Nginx，设置keepalive_timeout设置长连接超时时间，keepalive_requests设置长连接请求次数上限</li>
+<li><strong>系统内核参数设置</strong>：<ul>
+<li>net.ipv4.tcp_keepalive_time &#x3D; 60，连接闲置60秒后，服务端尝试向客户端发送侦测包，判断TCP连接状态，如果没有收到ack反馈就在</li>
+<li>net.ipv4.tcp_keepalive_intvl &#x3D; 10，就在10秒后再次尝试发送侦测包，直到收到ack反馈，一共会</li>
+<li>net.ipv4.tcp_keepalive_probes &#x3D; 5，一共会尝试5次，要是都没有收到就关闭这个TCP连接了<br><a name="HivXU"></a></li>
+</ul>
+</li>
+</ul>
+<h2 id="什么是管线化-管道化"><a href="#什么是管线化-管道化" class="headerlink" title="什么是管线化(管道化)"></a>什么是管线化(管道化)</h2><p>http1.1在使用长连接的情况下，建立一个连接通道后，连接上消息的传递类似于<br />请求1 -&gt; 响应1 -&gt; 请求2 -&gt; 响应2 -&gt; 请求3 -&gt; 响应3<br />管理化连接的消息就变成了类似这样<br />请求1 -&gt; 请求2 -&gt; 请求3 -&gt; 响应1 -&gt; 响应2 -&gt; 响应3<br />管线化是在同一个TCP连接里<strong>发一个请求后不必等其回来就可以继续发请求出去</strong>，这可以减少整体的响应时间，但是服务器还是<strong>会按照请求的顺序响应</strong>请求，所以如果有许多请求，而前面的请求响应很慢，就产生一个著名的问题队头堵塞(下面有讲解决方法)<br />管线化的特点：</p>
+<ul>
+<li>管线化机制通过持久连接完成，在http1.1版本才支持</li>
+<li>只有GET请求和HEAD请求才可以进行管线化，而POST有所限制</li>
+<li>初次创建连接时不应启动管线化机制，因为服务器不一定支持http1.1版本的协议</li>
+<li>管线化不会影响响应到来的顺序，如上面的例子所示，响应返回的顺序就是请求的顺序</li>
+<li>要求客户端和服务端都支持管线化，但并不要求服务端也对响应进行管线化处理，只是要求对于管线化的请求不失败即可</li>
+<li>由于上面提到的服务端问题，开户管线化很可能并不会带来大幅度的性能提升，而且很多服务端和代理程序对管线化的支持并不好，因为浏览器(Chrome&#x2F;Firefox)默认并未开启管线化支持<br><a name="iX2wY"></a></li>
+</ul>
+<h2 id="如何解决-HTTP-的队头阻塞问题"><a href="#如何解决-HTTP-的队头阻塞问题" class="headerlink" title="如何解决 HTTP 的队头阻塞问题"></a>如何解决 HTTP 的队头阻塞问题</h2><p>http1.0协议采用的是请求-应答模式，报文必须是一发一收，就形成了一个先进先出的串行队列，没有轻重缓急的优先级，只有入队的先后顺序，排在最前面的请求最先处理，就导致如果队首的请求耗时过长，后面的请求就只能处于阻塞状态，这就是著名的队头阻塞问题。解决如下：<br><a name="qOX7h"></a></p>
+<h3 id="并发连接"><a href="#并发连接" class="headerlink" title="并发连接"></a>并发连接</h3><p>因为一个域名允许分配多个长连接，就相当于增加了任务队列，不至于一个队列里的任务阻塞了其他全部任务。以前在RFC2616中规定过客户端最多只能并发2个连接，但是现实是很多浏览器不按套路出牌，就是遵守这个标准T_T，所以在RFC7230把这个规定取消掉了，现在的浏览器标准中一个域名并发连接可以有6<del>8个，记住是6</del>8个，不是6个(<strong>Chrome6个&#x2F;Firefox8个</strong>)<br />如果这个还不能满足你<br />继续，不要停…<br><a name="aoSSa"></a></p>
+<h3 id="域名分片"><a href="#域名分片" class="headerlink" title="域名分片"></a>域名分片</h3><p>一个域名最多可以并发6~8个，那咱就多来几个域名<br />比如a.baidu.com，b.baidu.com，c.baidu.com，多准备几个二级域名，当我们访问baidu.com时，可以让不同的资源从不同的二域名中获取，而它们都指向同一台服务器，这样能够并发更多的长连接了<br />而在HTTP2.0下，可以一瞬间加载出来很多资源，因为支持多路复用，可以在一个TCP连接中发送多个请求<br><a name="FFfdj"></a></p>
+<h2 id="说一下-HTTP-代理"><a href="#说一下-HTTP-代理" class="headerlink" title="说一下 HTTP 代理"></a>说一下 HTTP 代理</h2><p>常见的代理有两种：普通代理(中间人代理)，隧道代理<br><a name="VDUQA"></a></p>
+<h3 id="普通代理-中间人代理"><a href="#普通代理-中间人代理" class="headerlink" title="普通代理(中间人代理)"></a>普通代理(中间人代理)</h3><p>如图：代理服务器相当于一个中间人，一直帮两边传递东西，好可怜~~<br />不过它可以在中间可以帮我们过滤、缓存、负载均衡(多台服务器共用一台代理情况下)等一些处理<br />注意，实际场景中客户端和服务器之间可能有多个代理服务器<br><a name="DxSyh"></a></p>
+<h3 id="隧道代理"><a href="#隧道代理" class="headerlink" title="隧道代理"></a>隧道代理</h3><p>客户端通过CONNECT方法请求隧道代理创建一个可以到任意目标服务器和端口号的TCP连接，创建成功之后隧道代理只做请求和响应数据的转发，中间它不会做任何处理</p>
+<p>为什么需要隧道代理呢？<br />我们都知道https服务是需要网站有证书的，而代理服务器显然没有，所以浏览器和代理之间无法创建TLS，所以就有了隧道代理，它把浏览器的数据原样透传，这样就实现了通过中间代理和服务端进行TLS握手，然后进行加密传输<br />可能有人会问，那还要代理干嘛，直接请求服务器不是更好吗<br><a name="XHrsx"></a></p>
+<h3 id="代理服务器，到底有什么好处呢？"><a href="#代理服务器，到底有什么好处呢？" class="headerlink" title="代理服务器，到底有什么好处呢？"></a>代理服务器，到底有什么好处呢？</h3><ul>
+<li><strong>突破访问限制</strong>：如访问一些单位或集团内部资源，或用国外代理服务器(翻墙)，就可以上国外网站看片等</li>
+<li><strong>安全性更高</strong>：上网者可以通过这种方式隐藏自己的IP，免受攻击。还可以对数据过滤，对非法IP限流等</li>
+<li><strong>负载均衡</strong>：客户端请求先到代理服务器，而代理服务器后面有多少源服务器，IP是多少，客户端是不知道的。因此，代理服务器收到请求后，通过特定的算法(随机算法、轮询、一致性hash、LUR(最近最少使用) 算法这里不细说了)把请求分发给不同的源服务器，让各个源服务器负载尽量均衡</li>
+<li><strong>缓存代理</strong>：将内容缓存到代理服务器(这个下面一节详细说)<br><a name="F414k"></a></li>
+</ul>
+<h3 id="代理最常见的请求头"><a href="#代理最常见的请求头" class="headerlink" title="代理最常见的请求头"></a>代理最常见的请求头</h3><p><strong>Via</strong><br />是一个能用首部，由代理服务器添加，适用于正向和反向代理，在请求和响应首部均可出现，这个消息首部可以用来追踪消息转发情况，防止循环请求，还可以识别在请求或响应传递链中消息发送者对于协议的支持能力，详情请看MDN</p>
+<figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-attribute">Via</span>: <span class="hljs-number">1</span>.<span class="hljs-number">1</span> vegur<br><span class="hljs-attribute">Via</span>: HTTP/<span class="hljs-number">1</span>.<span class="hljs-number">1</span> GWA<br><span class="hljs-attribute">Via</span>: <span class="hljs-number">1</span>.<span class="hljs-number">0</span> fred, <span class="hljs-number">1</span>.<span class="hljs-number">1</span> p.example.net<br></code></pre></td></tr></table></figure>
+<p><strong>X-Forwarded-For</strong><br />记录客户端请求的来源IP，每经过一级代理(匿名代理除外)，代理服务器都会把这次请求的来源IP追加进去<br />X-Forwarded-For: client,proxy1,proxy2<br />注意：与服务器直连的代理服务器的IP不会被追加进去，该代理可能过TCP连接的Remote Address字段获取到与服务器直连的代理服务器IP<br /><strong>X-Real-IP</strong><br />一般记录真实发出请求的客户端的IP，还有X-Forwarded-Host和X-Forwarded-Proto分别记录真实发出请求的客户端的域名和协议名<br><a name="HIEgR"></a></p>
+<h3 id="代理中客户端IP伪造问题以及如何预防？"><a href="#代理中客户端IP伪造问题以及如何预防？" class="headerlink" title="代理中客户端IP伪造问题以及如何预防？"></a>代理中客户端IP伪造问题以及如何预防？</h3><p>X-Forwarded-For是可以伪造的，比如一些通过X-Forwarded-For获取到客户端IP来限制刷票的系统就可以通过伪造该请求头达到刷票的目的，如果客户端请求显示指定了<br />X-Forwarded-For：192.168.1.108<br />那么服务端收到的这个请求头，第一个IP就是伪造的<br /><strong>预防</strong></p>
+<ol>
+<li><p>在对外Nginx服务器上配置</p>
+<figure class="highlight crmsh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs crmsh"><span class="hljs-keyword">location</span> <span class="hljs-title">/ &#123;</span><br><span class="hljs-title"> proxy_set_header</span> X-Forwarded-For $remote_addr<br>&#125;<br></code></pre></td></tr></table></figure>
+<p>这样第一个IP就是从TCP连接客户端的IP，不会读取伪造的</p>
+</li>
+<li><p>从右到左遍历X-Forwarded-For的IP，排除已知代理服务器IP和内网IP，获取到第一个符合条件的IP就可以了<br><a name="SSwue"></a></p>
+</li>
+</ol>
+<h2 id="正向代理和反向代理"><a href="#正向代理和反向代理" class="headerlink" title="正向代理和反向代理"></a>正向代理和反向代理</h2><p><a name="Fx4aQ"></a></p>
+<h3 id="正向代理"><a href="#正向代理" class="headerlink" title="正向代理"></a>正向代理</h3><p>工作在客户端的代理为正向代理。使用正向代理的时候，需要在客户端配置需要使用的代理服务器，正向代理对服务端透明。比如抓包工具Fiddler、Charles以及访问一些外网网站的代理工具都是正向代理</p>
+<p><strong>正向代理通常用于</strong></p>
+<ul>
+<li>缓存</li>
+<li>屏蔽某些不健康的网站</li>
+<li>通过代理访问原本无法访问的网站</li>
+<li>上网认证，对用户访问进行授权<br><a name="af41H"></a></li>
+</ul>
+<h3 id="反向代理"><a href="#反向代理" class="headerlink" title="反向代理"></a>反向代理</h3><p>工作在服务端的代理称为反向代理。使用反向代理的时候，不需要在客户端进行设置，反向代理对客户端透明。如Nginx就是反向代理</p>
+<p><strong>反向代理通常用于</strong>：负载均衡、服务端缓存、流量隔离、日志、金丝雀发布<br><a name="o1BHC"></a></p>
+<h3 id="代理中的长连接"><a href="#代理中的长连接" class="headerlink" title="代理中的长连接"></a>代理中的长连接</h3><p>在各个代理和服务器、客户端节点之间是一段一段的TCP连接，客户端通过代理访问目标服务器也叫逐段传输，用于逐段传输的请求头叫逐段传输头。<br /><strong>逐段传输头</strong>会在每一段传输的中间代理中处理掉，不会传给下一个代理<br />标准的逐段传输头有：Keep-Alive、Transfer-Encoding、TE、Connection、Trailer、Upgrade、Proxy-Authorization、Proxy-Authenticate。<br />Connection头决定当前事务完成后是否关闭连接，如果该值为keep-alive，则连接是持久连接不会关闭，使得对同一服务器的请求可以继续在该连接上完成<br><a name="q94c1"></a></p>
+<h2 id="说一下-HTTP-缓存及缓存代理"><a href="#说一下-HTTP-缓存及缓存代理" class="headerlink" title="说一下 HTTP 缓存及缓存代理"></a>说一下 HTTP 缓存及缓存代理</h2><p>关于http缓存在上一篇文章里有了详细介绍 (建议收藏)为什么第二次打开页面快？五步吃透前端缓存，让页面飞起<br />缓存代理就是让代理服务器接管一部分的服务端的http缓存，客户端缓存过期之后就近到代理服务器的缓存中获取，代理缓存过期了才请求源服务器，这样流量大的时候能明显降低源服务器的压力<br />注意响应头字段</p>
+<ul>
+<li><strong>Cache-Control：</strong> 值有public时，表示可以被所有终端缓存，包括代理服务器、CDN。值有private时，只能被终端浏览器缓存，CDN、代理等中继服务器都不可以缓存。<br><a name="FnGbB"></a></li>
+</ul>
+<h2 id="HTTPS"><a href="#HTTPS" class="headerlink" title="HTTPS"></a>HTTPS</h2><p>HTTPS 是超文本传输安全协议，即HTTP + SSL&#x2F;TLS。说白了，就是一个加强版的HTTP</p>
+<p>HTTP本文开始讲了，所以我们要理解HTTPS的精华，就要先弄清楚这个SSL&#x2F;TLS了<br><a name="kUWzz"></a></p>
+<h3 id="SSL-TLS"><a href="#SSL-TLS" class="headerlink" title="SSL&#x2F;TLS"></a>SSL&#x2F;TLS</h3><p>一张图让你理解SSL和TLS的关系</p>
+<p>如图，TLS是SSL的升级版，而且TLS1.2版本以下都已废弃，目前主要用的是TLS 1.2和TLS 1.3。而<strong>OpenSSL</strong>则是<strong>开源版本</strong>的<br />那么它到底是个啥呢？<br />浏览器和服务器通信之前会先协商，选出它们都支持的加密套件，用来实现安全的通信。常见加密套件<br />随便拿出一个加密套件举例，如：<strong>RSA-PSK-AES128-GCM-SHA256</strong>，就是长这样，代表什么意思呢，我们看图</p>
+<ul>
+<li><strong>RSA</strong>：表示握手时用RSA算法交换密钥</li>
+<li><strong>PSK</strong>：表示使用PSK算法签名</li>
+<li><strong>AES128-GCM</strong>：表示使用AES256对称加密算法通信，密钥长度128，分组模式GCM。TLS 1.3中只剩下称加密算法有<strong>AES</strong>和<strong>CHACHA20</strong>，分组模式只剩下<strong>GCM</strong>和<strong>POLY1305</strong></li>
+<li><strong>SHA256</strong>：表示使用SHA256算法验证信息完整性并生成随机数。TLS 1.3中哈希摘要算法只剩下<strong>SHA256</strong>和<strong>SHA384</strong>了</li>
+</ul>
+<p>为什么需要用到这么多算法呢？<br />为了保证安全，TLS需要保证信息的：机密性、可用性、完整性、认证性、不可否认性，每一种算法都有其特定的用处<br><a name="JlFtR"></a></p>
+<h2 id="HTTPS-中-TLS-的加密算法"><a href="#HTTPS-中-TLS-的加密算法" class="headerlink" title="HTTPS 中 TLS 的加密算法"></a>HTTPS 中 TLS 的加密算法</h2><p>为什么说https是安全的？  https一定是安全的吗？（考察https中间人劫持，我另一篇有关于详细介绍网络安全）  有什么解决办法？  https的证书校验过程是怎么样的？  证书校验用到了哪些算法？<br /><strong>对称加密算法</strong><br />就是加密和解密使用同一个密钥。如AES、DES。加解密过程：</p>
+<ol>
+<li>浏览器给服务器发送一个随机数client-random和一个支持的加密方法列表</li>
+<li>服务器给浏览器返回另一个随机数server-random和双方都支持的加密方法</li>
+<li>然后两者用加密方法将两个随机数混合生成密钥，这就是通信双上加解密的密钥</li>
+</ol>
+<p>问题是双方如何安全的传递两个随机数和加密方法，直接传给客户端，那过程中就很可能被窃取，别人就能成功解密拿到数据，往下看<br /><strong>不对称加密算法</strong><br />就是一对密钥，有公钥(public key)和私钥(private key)，其中一个密钥加密后的数据，只能让另一个密钥进行解密。如RSA、ECDHE。加解密过程：</p>
+<ol>
+<li>浏览器给服务器发送一个随机数client-random和一个支持的加密方法列表</li>
+<li>服务器把另一个随机数server-random、加密方法、公钥传给浏览器</li>
+<li>然后浏览器用公钥将两个随机数加密，生成密钥，这个密钥只能用私钥解密</li>
+</ol>
+<p>使用公钥反推出私钥是非常困难，但不是做不到，随着计算机运算能力提高，非对称密钥至少要2048位才能保证安全性，这就导致性能上要比对称加密要差很多<br /><strong>所以！</strong><br />TLS实际用的是两种算法的混合加密。<strong>通过 非对称加密算法 交换 对称加密算法 的密钥，交换完成后，再使用对称加密进行加解密传输数据</strong>。这样就保证了会话的机密性。过程如下</p>
+<ol>
+<li>浏览器给服务器发送一个随机数client-random和一个支持的加密方法列表</li>
+<li>服务器把另一个随机数server-random、加密方法、公钥传给浏览器</li>
+<li>浏览器又生成另一个随机数pre-random，并用公钥加密后传给服务器</li>
+<li>服务器再用私钥解密，得到pre-random</li>
+<li>浏览器和服务器都将三个随机数用加密方法混合生成最终密钥</li>
+</ol>
+<p>这样即便被截持，中间人没有私钥就拿不到pre-random，就无法生成最终密钥。<br />可又有问题来了，如果一开始就被DNS截持，我们拿到的公钥是中间人的，而不是服务器的，数据还是会被窃取，所以数字证书来了，往下看，先简单说一下摘要算法<br /><strong>摘要算法</strong><br />主要用于保证信息的完整性。常见的<strong>MD5算法</strong>、<strong>散列函数</strong>、<strong>哈希函数</strong>都属于这类算法，其特点就是单向性、无法反推原文<br />假如信息被截取，并重新生成了摘要，这时候就判断不出来是否被篡改了，所以需要给摘要也通过会话密钥进行加密，这样就看不到明文信息，保证了安全性，同时也保证了完整性<br><a name="aEDyK"></a></p>
+<h2 id="如何保证数据不被篡改？签名原理和证书"><a href="#如何保证数据不被篡改？签名原理和证书" class="headerlink" title="如何保证数据不被篡改？签名原理和证书?"></a>如何保证数据不被篡改？签名原理和证书?</h2><p><strong>数字证书(数字签名)</strong><br />它可以帮我们验证服务器身份。因为如果没有验证的话，就可能被中间人劫持，假如请求被中间人截获，中间人把他自己的公钥给了客户端，客户端收到公钥就把信息发给中间人了，中间人解密拿到数据后，再请求实际服务器，拿到服务器公钥，再把信息发给服务器<br />这样不知不觉间信息就被人窃取了，所以在结合对称和非对称加密的基础上，又添加了数字证书认证的步骤，让服务器证明自己的身份<br />数字证书需要向有权威的认证机构(CA)获取授权给服务器。首先，服务器和CA机构分别有一对密钥(公钥和私钥)，然后是如何生成数字证书的呢？</p>
+<ul>
+<li>CA机构通过摘要算法生成服务器公钥的摘要(哈希摘要)</li>
+<li>CA机构通过<strong>CA私钥</strong>及特定的签名算法<strong>加密</strong>摘要，生成签名</li>
+<li>把签名、服务器公钥等信息打包放入数字证书，并返回给服务器</li>
+</ul>
+<p>服务器配置好证书，以后客户端连接服务器，都先把证书发给客户端验证并获取服务器的公钥。<br /><strong>证书验证流程</strong>：</p>
+<ul>
+<li>使用<strong>CA公钥</strong>和声明的签名算法对CA中的签名进行<strong>解密</strong>，得到服务器公钥的摘要内容</li>
+<li>再用摘要算法对证书里的服务器公钥生成摘要，再把这个摘要和上一步得到的摘要对比，如果一致说明证书合法，里面的公钥也是正确的，否则就是非法的</li>
+</ul>
+<p>证书认证又分为单向认证和双向认证<br /><strong>单向认证</strong>：服务器发送证书，客户端验证证书  <strong>双向认证</strong>：服务器和客户端分别提供证书给对方，并互相验证对方的证书<br /><strong>不过大多数https服务器都是单向认证，如果服务器需要验证客户端的身份，一般通过用户名、密码、手机验证码等之类的凭证来验证。只有更高级别的要求的系统，比如大额网银转账等，就会提供双向认证的场景，来确保对客户身份提供认证性</strong><br><a name="k377k"></a></p>
+<h2 id="HTTPS-连接过程和优化"><a href="#HTTPS-连接过程和优化" class="headerlink" title="HTTPS 连接过程和优化"></a>HTTPS 连接过程和优化</h2><p>我们知道了https就只是比http多了一步TLS连接<br />TLS连接是怎么回事呢，根据TLS版本和密钥交换法不同，过程也不一样，有三种方式<br><a name="yi9LA"></a></p>
+<h3 id="RSA握手"><a href="#RSA握手" class="headerlink" title="RSA握手"></a>RSA握手</h3><p>早期的TLS密钥交换法都是使用RSA算法，它的握手流程是这样子的</p>
+<ol>
+<li>浏览器给服务器发送一个随机数client-random和一个支持的加密方法列表</li>
+<li>服务器把另一个随机数server-random、加密方法、公钥传给浏览器</li>
+<li>浏览器又生成另一个随机数pre-random，并用公钥加密后传给服务器</li>
+<li>服务器再用私钥解密，得到pre-random，此时浏览器和服务器都得到三个随机数了，各自将三个随机数用加密方法混合生成最终密钥</li>
+</ol>
+<p>然后开始通信<br><a name="d41sM"></a></p>
+<h3 id="TLS-1-2-版"><a href="#TLS-1-2-版" class="headerlink" title="TLS 1.2 版"></a>TLS 1.2 版</h3><p>TLS 1.2版的用的是ECDHE密钥交换法，看图</p>
+<ol>
+<li>浏览器给服务器发送一个随机数client-random、TLS版本和一个支持的加密方法列表</li>
+<li>服务器生成一个椭圆曲线参数server-params、随机数server-random、加密方法、证书等传给浏览器</li>
+<li>浏览器又生成椭圆曲线参数client-params，握手数据摘要等信息传给服务器</li>
+<li>服务器再返回摘要给浏览器确认应答</li>
+</ol>
+<p>这个版本不再生成椭圆曲线参数cliend-params和server-params，而是在服务器和浏览器两边都得到server-params和client-params之后，就用ECDHE算法直接算出pre-random，这就两边都有了三个随机数，然后各自再将三个随机加密混合生成最终密钥<br><a name="ae96S"></a></p>
+<h3 id="TLS-1-3版"><a href="#TLS-1-3版" class="headerlink" title="TLS 1.3版"></a>TLS 1.3版</h3><p>在TLS1.3版本中废弃了RSA算法，因为RSA算法可能泄露私钥导致历史报文全部被破解，而ECDHE算法每次握手都会生成临时的密钥，所以就算私钥被破解，也只能破解一条报文，而不会对之前的历史信息产生影响，，所以在TLS 1.3中彻底取代了RSA。目前主流都是用ECDHE算法来做密钥交换的<br />TLS1.3版本中握手过程是这样子的</p>
+<ol>
+<li>浏览器生成client-params、和client-random、TLS版本和加密方法列表发送给服务器</li>
+<li>服务器返回server-params、server-random、加密方法、证书、摘要等传给浏览器</li>
+<li>浏览器确认应答，返回握手数据摘要等信息传给服务器</li>
+</ol>
+<p>简单说就是简化了握手过程，只有三步，把原来的两个RTT打包成一个发送了，所以减少了传输次数。这种握手方式也叫1-RTT握手<br />这种握手方还有优化空间吗？<br />有的，用会话复用<br><a name="Hu3hS"></a></p>
+<h3 id="会话复用"><a href="#会话复用" class="headerlink" title="会话复用"></a>会话复用</h3><p>会话复用有两种方式：Session ID 和 Session Ticket<br /><strong>Session ID</strong>：就是客户端和服务器首次连接手各自保存会话ID，并存储会话密钥，下次再连接时，客户端发送ID过来，服务器这边再查找ID，如果找到了就直接复用会话，密钥也不用重新生成<br />可是这样的话，在客户端数量庞大的时候，对服务器的存储压力可就大了<br />所以出来了第二种方式 <strong>Session Ticket</strong>：就是双方连接成功后服务器加密会话信息，用Session Ticket消息发给客户端存储起来，下次再连接时就把这个Session Ticket解密，验证有没有过期，如果没有过期就复用会话。原理就是把存储压力分给客户端。<br />这样就万无一失了吗？<br />No，这样也存在安全问题。因为每次要用一个固定的密钥来解密Session Ticket，一旦密钥被窃取，那所有历史记录也就被破解了，所以只能尽量避免这种问题定期更换密钥。毕竟节省了不少生成会话密钥和这些算法的耗时，性能还是提升了嘛<br />那刚说了1-RTT，那能不能优化到0-RTT呢<br />还真可以，做法就是发送Session Ticket的时候带上应用数据，不用等服务端确认。这种方式被称为PSK(Pre-Shared Key)<br />这样万无一失了吗？<br />尴了个尬，还是不行。这PSK要是被窃取，人家不断向服务器重发，就直接增加了服务器被攻击的风险<br />虽然不是绝对安全，但是现行架构下最安全的解决文案了，大大增加了中间人的攻击成本<br><a name="C60lI"></a></p>
+<h2 id="HTTPS优缺点"><a href="#HTTPS优缺点" class="headerlink" title="HTTPS优缺点"></a>HTTPS优缺点</h2><p><strong>优点</strong></p>
+<ul>
+<li>内容加密，中间无法查看原始内容</li>
+<li>身份认证，保证用户访问正确。如访问百度，即使DNS被劫持到第三方站点，也会提醒用户没有访问百度服务，可能被劫持</li>
+<li>数据完整性，防止内容被第三方冒充或篡改</li>
+<li>虽然不是绝对安全，但是现行架构下最安全的解决文案了，大大增加了中间人的攻击成本</li>
+</ul>
+<p><strong>缺点</strong></p>
+<ul>
+<li>要钱，功能越强大的证书费用越贵</li>
+<li>证书需要绑定IP，不能在同一个IP上绑定多个域名</li>
+<li>https双方加解密，耗费更多服务器资源</li>
+<li>https握手更耗时，降低一定用户访问速度(优化好就不是缺点了)<br><a name="ezfOA"></a></li>
+</ul>
+<h2 id="HTTP-和-HTTPS-的区别"><a href="#HTTP-和-HTTPS-的区别" class="headerlink" title="HTTP 和 HTTPS 的区别"></a>HTTP 和 HTTPS 的区别</h2><ul>
+<li>HTTP是明文传输，不安全的，HTTPS是加密传输，安全的多</li>
+<li>HTTP标准端口是80，HTTPS标准端口是443</li>
+<li>HTTP不用认证证书免费，HTTPS需要认证证书要钱</li>
+<li>连接方式不同，HTTP三次握手，HTTPS中TLS1.2版本7次，TLS1.3版本6次</li>
+<li>HTTP在OSI网络模型中是在应用层，而HTTPS的TLS是在传输层</li>
+<li>HTTP是无状态的，HTTPS是有状态的<br><a name="o32xl"></a></li>
+</ul>
+<h2 id="HTTPS-的性能优化"><a href="#HTTPS-的性能优化" class="headerlink" title="HTTPS 的性能优化"></a>HTTPS 的性能优化</h2><p><a name="AkE13"></a></p>
+<h3 id="访问速度优化"><a href="#访问速度优化" class="headerlink" title="访问速度优化"></a>访问速度优化</h3><ol>
+<li>会话复用，上面说了，复用session可以减少 CPU 消耗，因为不需要进行非对称密钥交换的计算。可以提升访问速度，不需要进行完全握手阶段二，节省了一个 RTT 和计算耗时。</li>
+<li>使用 SPDY 或者 HTTP2。SPDY 最大的特性就是多路复用，能将多个 HTTP 请求在同一个连接上一起发出去，不像目前的 HTTP 协议一样，只能串行地逐个发送请求。Pipeline 虽然支持多个请求一起发送，但是接收时依然得按照顺序接收，本质上无法解决并发的问题。HTTP2支持多路复用，有同样的效果。</li>
+<li>设置HSTS，服务端返回一个 HSTS 的 http header，浏览器获取到 HSTS 头部之后，在一段时间内，不管用户输入<a target="_blank" rel="noopener" href="http://www.baidu.com还是http////www.baidu.com">www.baidu.com还是http:\/\/www.baidu.com</a> ，都会默认将请求内部跳转成https://<a target="_blank" rel="noopener" href="http://www.baidu.com.chrome/">www.baidu.com。Chrome</a>, firefox, ie 都支持了 HSTS。</li>
+<li>Nginx设置Ocsp stapling。Ocsp 全称在线证书状态检查协议 (rfc6960)，用来向 CA 站点查询证书状态，比如是否撤销。通常情况下，浏览器使用 OCSP 协议发起查询请求，CA 返回证书状态内容，然后浏览器接受证书是否可信的状态。这个过程非常消耗时间，因为 CA 站点有可能在国外，网络不稳定，RTT 也比较大。如果不需要查询则可节约时间。</li>
+<li>False start。简单概括 False start 的原理就是在 clientkeyexchange 发出时将应用层数据一起发出来，能够节省一个 RTT。<br><a name="U2o06"></a></li>
+</ol>
+<h3 id="计算性能优化"><a href="#计算性能优化" class="headerlink" title="计算性能优化"></a>计算性能优化</h3><ol>
+<li>优先使用 ECC椭圆加密算术</li>
+<li>使用最新版的 OpenSSL</li>
+<li>TLS 远程代理计算</li>
+<li>硬件加速方案<br><a name="JST8X"></a></li>
+</ol>
+<h2 id="HTTP-版本"><a href="#HTTP-版本" class="headerlink" title="HTTP 版本"></a>HTTP 版本</h2><p>1991年HTTP 0.9版，只有一个GET，而且只支持纯文本内容，早已过时就不讲了<br><a name="VSvRN"></a></p>
+<h3 id="HTTP-1-0-1996年"><a href="#HTTP-1-0-1996年" class="headerlink" title="HTTP 1.0(1996年)"></a>HTTP 1.0(1996年)</h3><ul>
+<li>任意数据类型都可以发送</li>
+<li>有GET、POST、HEAD三种方法</li>
+<li>无法复用TCP连接(长连接)</li>
+<li>有丰富的请求响应头信息。以header中的Last-Modified&#x2F;If-Modified-Since和Expires作为缓存标识<br><a name="JtuhV"></a></li>
+</ul>
+<h3 id="HTTP-1-1-1997年"><a href="#HTTP-1-1-1997年" class="headerlink" title="HTTP 1.1(1997年)"></a>HTTP 1.1(1997年)</h3><ul>
+<li>引入更多的请求方法类型PUT、PATCH、DELETE、OPTIONS、TRACE、CONNECT</li>
+<li>引入长连接，就是TCP连接默认不关闭，可以被多个请求复用，通过请求头connection:keep-alive设置</li>
+<li>引入管道连接机制，可以在同一TCP连接里，同时发送多个请求</li>
+<li>强化了缓存管理和控制Cache-Control、ETag&#x2F;If-None-Match</li>
+<li>支持分块响应，断点续传，利于大文件传输，能过请求头中的Range实现</li>
+<li>使用了虚拟网络，在一台物理服务器上可以存在多个虚拟主机，并且共享一个IP地址</li>
+</ul>
+<p><strong>缺点</strong>：主要是连接缓慢，服务器只能按顺序响应，如果某个请求花了很长时间，就会出现请求队头阻塞<br />虽然出了很多优化技巧：为了增加并发请求，做域名拆分、资源合并、精灵图、资源预取…等等<br />最终为了推进从协议上进行优化，Google跳出来，推出SPDY协议<br><a name="h7c0D"></a></p>
+<h3 id="SPDY-2009年"><a href="#SPDY-2009年" class="headerlink" title="SPDY(2009年)"></a>SPDY(2009年)</h3><p>SPDY（读作“SPeeDY”）是Google开发的基于TCP的会话层协议<br />主要通过帧、多路复用、请求优先级、HTTP报头压缩、服务器推送以最小化网络延迟，提升网络速度，优化用户的网络使用体验<br />原理是在SSL层上增加一个SPDY会话层，以在一个TCP连接中实现并发流。通常的HTTP GET和POST格式仍然是一样的，然而SPDY为编码和传输数据设计了一个新的帧格式。因为流是双向的，所以可以在客户端和服务端启动<br />虽然诞生后很快被所有主流浏览器所采用，并且服务器和代理也提供了支持，但是SPDY核心人员后来都参加到HTTP 2.0开发中去了，自HTTP2.0开发完成就不再支持SPDY协议了，并在Chrome 51中删掉了SPDY的支持<br><a name="nrgSV"></a></p>
+<h3 id="HTTP-2-0-2015年"><a href="#HTTP-2-0-2015年" class="headerlink" title="HTTP 2.0(2015年)"></a>HTTP 2.0(2015年)</h3><p>说出http2中至少三个新特性？</p>
+<ul>
+<li>使用新的二进制协议，不再是纯文本，避免文本歧义，缩小了请求体积</li>
+<li>多路复用，同域名下所有通信都是在单链接(双向数据流)完成，提高连接的复用率，在拥塞控制方面有更好的能力提升</li>
+<li>使用HPACK算法将头部压缩，用哈夫曼编码建立索表，传送索引大大节约了带宽</li>
+<li>允许服务端主动推送数据给客户端</li>
+<li>增加了安全性，使用HTTP 2.0，要求必须至少TLS 1.2</li>
+<li>使用虚拟的流传输消息，解决了应用层的队头阻塞问题</li>
+</ul>
+<p><strong>缺点</strong></p>
+<ul>
+<li>TCP以及TCP+TLS建立连接的延时，HTTP2使用TCP协议来传输的，而如果使用HTTPS的话，还需要TLS协议进行安全传输，而使用TLS也需要一个握手过程，在传输数据之前，导致我们花掉3~4个RTT</li>
+<li>TCP的队头阻塞并没有彻底解决。在HTTP2中，多个请求跑在一个TCP管道中，但当HTTP2出现丢包时，整个TCP都要开始等待重传，那么就会阻塞该TCP连接中的所有请求<br><a name="LWqsV"></a></li>
+</ul>
+<h3 id="SPDY-和-HTTP2-的区别"><a href="#SPDY-和-HTTP2-的区别" class="headerlink" title="SPDY 和 HTTP2 的区别"></a>SPDY 和 HTTP2 的区别</h3><ul>
+<li>头部压缩算法，SPDY是通用的deflate算法，HTTP2是专门为压缩头部设计的HPACK算法</li>
+<li>SPDY必须在TLS上运行，HTTP2可在TCP上直接使用，因为增加了HTTP1.1的Upgrade机制</li>
+<li>SPDY更加完善的协议商讨和确认流程</li>
+<li>SPDY更加完善的Server Push流程</li>
+<li>SPDY增加控制帧的种类，并对帧的格式考虑的更细致<br><a name="SZvvS"></a></li>
+</ul>
+<h3 id="HTTP1-和-HTTP2"><a href="#HTTP1-和-HTTP2" class="headerlink" title="HTTP1 和 HTTP2"></a>HTTP1 和 HTTP2</h3><ul>
+<li>HTTP2是一个二进制协议，HTTP1是超文本协议，传输的内容都不是一样的</li>
+<li>HTTP2报头压缩，可以使用HPACK进行头部压缩，HTTP1则不论什么请求都会发送</li>
+<li>HTTP2服务端推送(Server push)，允许服务器预先将网页所需要的资源push到浏览器的内存当中</li>
+<li>HTTP2遵循多路复用，代替同一域名下的内容，只建立一次连接，HTTP1.x不是，对域名有6~8个连接限制</li>
+<li>HTTP2引入二进制数据帧和流的概念，其中帧对数据进行顺序标识，这样浏览器收到数据之后，就可以按照序列对数据进行合并，而不会出现合并后数据错乱的情况，同样是因为有了序列，服务器就可以并行的传输数据，这就是流所做的事情。HTTP2对同一域名下所有请求都是基于流的，也就是说同一域名下不管访问多少文件，只建立一次连接<br><a name="AtnhY"></a></li>
+</ul>
+<h3 id="HTTP-3-0-QUIC"><a href="#HTTP-3-0-QUIC" class="headerlink" title="HTTP 3.0&#x2F;QUIC"></a>HTTP 3.0&#x2F;QUIC</h3><p>由于HTTP 2.0依赖于TCP，TCP有什么问题那HTTP2就会有什么问题。最主要的还是队头阻塞，在应用层的问题解决了，可是在TCP协议层的队头阻塞还没有解决。<br />TCP在丢包的时候会进行重传，前面有一个包没收到，就只能把后面的包放到缓冲区，应用层是无法取数据的，也就是说HTTP2的多路复用并行性对于TCP的丢失恢复机制不管用，因此丢失或重新排序的数据都会导致交互挂掉<br />为了解决这个问题，Google又发明了QUIC协议<br />并在2018年11月将QUIC正式改名为HTTP 3.0<br /><strong>特点</strong>：</p>
+<ul>
+<li>在传输层直接干掉TCP，用UDP替代</li>
+<li>实现了一套新的拥塞控制算法，彻底解决TCP中队头阻塞的问题</li>
+<li>实现了类似TCP的流量控制、传输可靠性的功能。虽然UDP不提供可靠性的传输，但QUIC在UDP的基础之上增加了一层来保证数据可靠性传输。它提供了数据包重传、拥塞控制以及其他一些TCP中存在的特性</li>
+<li>实现了快速握手功能。由于QUIC是基于UDP的，所以QUIC可以实现使用0-RTT或者1-RTT来建立连接，这意味着QUIC可以用最快的速度来发送和接收数据。</li>
+<li>集成了TLS加密功能。目前QUIC使用的是TLS1.3</li>
+</ul>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" class="print-no-link">#计算机网络</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>HTTP协议概述</div>
+      <div>http://example.com/2024/03/18/HTTP协议概述/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>SCORKI</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2024年3月18日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2024/03/11/LeetCode71-%E7%AE%80%E5%8C%96%E8%B7%AF%E5%BE%84/" title="LeetCode71.简化路径">
+                        <span class="hidden-mobile">LeetCode71.简化路径</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>
